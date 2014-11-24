@@ -1,4 +1,5 @@
 function [F] = gD(F, sigma, x_order, y_order)
+    % calculates gaussian derivive
 
     G_x = gauss1(sigma);
     

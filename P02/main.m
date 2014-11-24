@@ -16,7 +16,10 @@
 %% Q2.2: Checking sum of gauss
 
 % I would expect it to return 1. Because thats the area of the probability
-% density function. Our function does exactly this. See:
+% density function. Our function does exactly this. 
+% Note that "weak" implementations return < 1. But we never had this issue
+% because we did it correct the first time 
+%See:
 
 % create sigmas from 1 to 10
 sigmas = linspace(1, 10, 10);
@@ -163,6 +166,8 @@ clear;
 F = imread('cameraman.tif');
 F = im2double(F);
 sigma = 2;
+
+% plot all the derivates nicely
 figure;
 subplot(3,3,1);
 imshow(F);
@@ -205,45 +210,13 @@ figure;
 subplot(1, 2, 1);
 imshow(F);
 title('original');
+
+% thats the 2jet
 subplot(1, 2, 2);
-imshow(twojet2(F, sigma), []);
+imshow(twojet(F, sigma), []);
 title('2-jet');
 
 clear
-
-% 
-% % size of local neighbourhood
-% sample_size = 4;
-% sample_size_big = 20;
-% sigma = 0.7;
-% 
-% jetty_g = twojet(F, sigma, sample_size, 'gaussian');
-% jetty_s = twojet(F, sigma, sample_size, 'standard');
-% jetty_g2 = twojet(F, sigma, sample_size_big, 'gaussian');
-% jetty_s2 = twojet(F, sigma, sample_size_big, 'standard');
-% 
-% 
-% figure;
-% subplot(2, 3, 1);
-% imshow(F);
-% title('original');
-% subplot(2, 3, 2);
-% imshow(jetty_g, []);
-% title('gaussian, n=4');
-% subplot(2, 3, 3);
-% imshow(jetty_s, []);
-% title('standard, n=4');
-% subplot(2, 3, 4);
-% imshow(F);
-% title('original');
-% subplot(2, 3, 5);
-% imshow(jetty_g2, []);
-% title('gaussian, n=20');
-% subplot(2, 3, 6);
-% imshow(jetty_s2, []);
-% title('standard, n=20');
-% 
-% clear
 
 %% Q3.0: Show image (1)
 % Test code
