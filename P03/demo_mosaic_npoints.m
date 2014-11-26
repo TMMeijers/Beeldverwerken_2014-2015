@@ -1,4 +1,4 @@
-function demo_mosaic()
+function demo_mosaic_npoints()
 % script to demonstrate image mosaic
 % by handpicking 4 matching points
 % in the order topleft - topright - bottomright - bottomleft
@@ -16,4 +16,5 @@ function demo_mosaic()
     f22 = imtransform(f2, maketform('affine', [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
     subplot(1,1,1);
     imshow(max(f12,f22));
+    
 end
