@@ -7,7 +7,7 @@ function demo_mosaic()
 
     [xy, xaya] = pickmatchingpoints(f1, f2, 4, 1)
 
-    T = maketform('projective',xy', xaya');
+    T = maketform('projective',xy', xaya')
     [x y] = tformfwd(T,[1 size(f1,2)], [1 size(f1,1)]);
 
     xdata = [min(1,x(1)) max(size(f2,2),x(2))];
