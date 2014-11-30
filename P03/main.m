@@ -13,18 +13,19 @@
 % Check if vl_feat library installed correctly
 vl_version verbose
 
-clear
+clear;
 
 %% Section 2: Projectivity
 
 % Run the premade demo
 demo_mosaic;
 
-clear
+clear;
+
 %% 2.1: Projectivity Matrix
 
 % Run demo with points specified (argument)
-demo_mosaic_npoints(10);
+demo_mosaic_npoints(6);
 
 clear;
 
@@ -87,6 +88,7 @@ img2 = im2single(img2);
 [F2, D2] = vl_sift(img2);
 matches = vl_ubcmatch(D1, D2);
 
+%%%%% PROJECTION WITH CORRECT MATCHDES %%%%%
 % Get coordinates
 m1 = matches(1,:);
 m1coords = F1(:,m1);
@@ -109,18 +111,61 @@ m2coords = m2coords([1:2],:);
 
 % Plot images and matching points
 figure('name','Visualizing own matches');
-subplot(1, 2, 1);
+subplot(2, 2, 1);
 imshow(nachtwacht1);
 for i = 1:length(m1coords)
     text(m1coords(1, i), m1coords(2,i), sprintf('%02d',i), 'Color', 'red');
 end
-title('Nachtwacht1.jpg');
+title('1. Correct matches projection');
 
-subplot(1, 2, 2);
+subplot(2, 2, 2);
 imshow(nachtwacht2);
 for i = 1:length(m2coords)
     text(m2coords(1, i), m2coords(2,i), sprintf('%02d',i), 'Color', 'red');
 end
-title('Nachtwacht2.jpg');
+title('2. Correct matches projection');
+
+%%%%% PROJECTION WITH WRONG MATCHDES %%%%%
+% Get coordinates
+m1 = matches(1,:);
+m1coords = F1(:,m1);
+m1coords = m1coords([1:2],:);
+m2 = matches(2,:);
+m2coords = F2(:,m2);
+m2coords = m2coords([1:2],:);
+
+% Get 4 points and make projection matrix
+pcoords1 = m1coords(:,[1 12 18 25])'; % 2 to 5 are correct matches
+pcoords2 = m2coords(:,[1 12 18 25])';
+P = projectionMatrix(pcoords1, pcoords2);
+
+% Transform to real coordinates and drop 3rd dimension (1's)
+m2coords = P * [m1coords; ones(1, length(m1coords))];
+for i = 1:length(m2coords)
+    m2coords(:,i) = m2coords(:,i) ./ m2coords(3,i);
+end
+m2coords = m2coords([1:2],:);
+
+% Plot images and matching points
+subplot(2, 2, 3);
+imshow(nachtwacht1);
+for i = 1:length(m1coords)
+    text(m1coords(1, i), m1coords(2,i), sprintf('%02d',i), 'Color', 'red');
+end
+title('1. False matches projection');
+
+subplot(2, 2, 4);
+imshow(nachtwacht2);
+for i = 1:length(m2coords)
+    text(m2coords(1, i), m2coords(2,i), sprintf('%02d',i), 'Color', 'red');
+end
+title('2. False matches projection');
+
+% Clarification: Ofcourse, when one uses four correct matches the correct
+% matches are projected well. Incorrect matches are even projected of the
+% image. 
+% When one uses the wrong points, these get projected "correctly" but all 
+% the other points are projected incorrectly, grouped together because of
+% the wrong projection matrix.
 
 clear;
