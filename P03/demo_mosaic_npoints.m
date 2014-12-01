@@ -1,6 +1,6 @@
 function demo_mosaic_npoints(nrPoints)
 % script to demonstrate image mosaic
-% by handpicking 4 matching points
+% by handpicking 'nrPoints' amount of matching points given as a parameter to function
 % in the order topleft - topright - bottomright - bottomleft
 
     f1 = imread('nachtwacht1.jpg');
