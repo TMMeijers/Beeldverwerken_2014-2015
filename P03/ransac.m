@@ -1,4 +1,4 @@
-function [best_fit] = ransac(img1, img2, n, err, iterations, margin)
+function [best_fit] = ransac(img1, img2, n, err, iterations, threshold)
 %RANSAC 
 
     % Get keypoints and matches
@@ -14,7 +14,7 @@ function [best_fit] = ransac(img1, img2, n, err, iterations, margin)
     m2coords = F2(:,m2);
     m2coords = m2coords(1:2,:);
 
-    inlier_margin = ceil(size(matches, 2) * margin); % percentage inliers
+    inlier_margin = ceil(size(matches, 2) * threshold); % percentage inliers
     
     best_error = inf();
     
@@ -41,19 +41,19 @@ function [best_fit] = ransac(img1, img2, n, err, iterations, margin)
         
         if nr_inliers >= inlier_margin % If more than 50% of matches is inlier
             % Make model out of all inliers
-            m1 = m1coords(:,inlier_indices)';
-            m2 = m2coords(:,inlier_indices)';
-            fit = projectionMatrix(m1, m2);
+            m1 = m1coords(:,inlier_indices);
+            m2 = m2coords(:,inlier_indices);
+            fit = projectionMatrix(m1', m2');
             
             % Project again
-            p2 = fit * [m1coords; ones(1, size(m1coords, 2))];
+            p2 = fit * [m1; ones(1, size(m1, 2))];
             for j = 1:length(p2)
                 p2(:,j) = p2(:,j) ./ p2(3,j);
             end
             p2 = p2(1:2,:);
             
             % Calculate total error and check if model is better
-            new_error = sum(sqrt(sum((m2coords - p2).^2)));
+            new_error = sum(sqrt(sum((m2 - p2).^2)));
             if new_error < best_error;
                 best_error = new_error;
                 best_fit = fit;

@@ -170,8 +170,9 @@ title('2. False matches projection');
 
 clear;
 
-%% Section 4: RANSAC
+%% Section 4: Mosaicing with RANSAC
 
+% Load images, convert to grayscale and singles
 nachtwacht1 = imread('nachtwacht1.jpg');
 img1 = rgb2gray(nachtwacht1);
 img1 = im2single(img1);
@@ -182,15 +183,15 @@ img2 = im2single(img2);
 % Variables for RANSAC:
 n = 4; % 4 points needed for model
 err = 1; % error for inliers (euclidean pixel distance)
-iter = 100; % number of iterations to find best model
-margin = 0.5; % percentage of points which should be inliers to check model
+iter = 25; % number of iterations to find best model
+threshold = 0.5; % percentage of points which should be inliers to check model
 
 % Obtain best fit (and transpose for T form)
-best_fit = ransac(img1, img2, n, err, iter, margin)';
+best_fit = ransac(img1, img2, n, err, iter, threshold)';
 
 T = maketform('projective', best_fit/best_fit(3,3));
 
-% CODE FROM MOSAIC DEMO
+% BEGIN CODE FROM MOSAIC DEMO
 [x, y] = tformfwd(T,[1 size(nachtwacht1,2)], [1 size(nachtwacht1,1)]);
 
 xdata = [min(1,x(1)) max(size(nachtwacht2,2),x(2))];
@@ -200,3 +201,133 @@ f22 = imtransform(nachtwacht2, maketform('affine', ...
     [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
 subplot(1,1,1);
 imshow(max(f12,f22));
+% END CODE FROM MOSAIC DEMO
+
+%% Experimenting with RANSAC: Mountains
+% These mountains don't really differ in angle or rotation and thus are
+% easily matched.
+
+% Load images, convert to grayscale and singles
+berg1 = imread('berg1.jpg');
+img1 = rgb2gray(berg1);
+img1 = im2single(img1);
+berg2 = imread('berg2.jpg');
+img2 = rgb2gray(berg2);
+img2 = im2single(img2);
+
+% Variables for RANSAC:
+n = 4; % 4 points needed for model
+err = 1; % error for inliers (euclidean pixel distance)
+iter = 10; % number of iterations to find best model
+threshold = 0.4; % percentage of points which should be inliers to check model
+
+% Obtain best fit (and transpose for T form)
+best_fit = ransac(img1, img2, n, err, iter, threshold)';
+
+T = maketform('projective', best_fit/best_fit(3,3));
+
+% BEGIN CODE FROM MOSAIC DEMO
+figure('name','Mosiacing mountains');
+subplot(2,2,1);
+imshow(berg1);
+title('Original 1');
+subplot(2,2,2);
+imshow(berg2);
+title('Original 2');
+[x, y] = tformfwd(T,[1 size(berg1,2)], [1 size(berg1,1)]);
+
+xdata = [min(1,x(1)) max(size(berg2,2),x(2))];
+ydata = [min(1,y(1)) max(size(berg2,1),y(2))];
+f12 = imtransform(berg1,T,'Xdata',xdata,'YData',ydata);
+f22 = imtransform(berg2, maketform('affine', ...
+    [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
+subplot(2,2,3);
+imshow(max(f12,f22));
+title('Mosiacing result');
+% END CODE FROM MOSAIC DEMO
+
+%% Experimenting with RANSAC: Nice people
+% Even though the angle of the images differs significantly the image can
+% be matches quite nicely.
+
+% Load images, convert to grayscale and singles
+ppl1 = imread('classroom1.jpg');
+img1 = rgb2gray(ppl1);
+img1 = im2single(img1);
+ppl2 = imread('classroom2.jpg');
+img2 = rgb2gray(ppl2);
+img2 = im2single(img2);
+
+% Variables for RANSAC:
+n = 4; % 4 points needed for model
+err = 1; % error for inliers (euclidean pixel distance)
+iter = 100; % number of iterations to find best model
+threshold = 0.25; % percentage of points which should be inliers to check model
+
+% Obtain best fit (and transpose for T form)
+best_fit = ransac(img1, img2, n, err, iter, threshold)';
+
+T = maketform('projective', best_fit/best_fit(3,3));
+
+% BEGIN CODE FROM MOSAIC DEMO
+figure('name','Mosiacing classroom');
+subplot(2,2,1);
+imshow(ppl1);
+title('Original 1');
+subplot(2,2,2);
+imshow(ppl2);
+title('Original 2');
+[x, y] = tformfwd(T,[1 size(ppl1,2)], [1 size(ppl1,1)]);
+
+xdata = [min(1,x(1)) max(size(ppl2,2),x(2))];
+ydata = [min(1,y(1)) max(size(ppl2,1),y(2))];
+f12 = imtransform(ppl1,T,'Xdata',xdata,'YData',ydata);
+f22 = imtransform(ppl2, maketform('affine', ...
+    [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
+subplot(2,2,3);
+imshow(max(f12,f22));
+title('Mosiacing result');
+% END CODE FROM MOSAIC DEMO
+
+%% Experimenting with RANSAC: Roofs
+% These pictures doesn't return a nice set of correct matches so we need a
+% high amount of iterations with a large error margin.
+
+% Load images, convert to grayscale and singles
+roofs1 = imread('roofs1.jpg');
+img1 = rgb2gray(roofs1);
+img1 = im2single(img1);
+roofs2 = imread('roofs2.jpg');
+img2 = rgb2gray(roofs2);
+img2 = im2single(img2);
+
+% Variables for RANSAC:
+n = 4; % 4 points needed for model
+err = 5; % error for inliers (euclidean pixel distance)
+iter = 10000; % number of iterations to find best model
+threshold = 0.2; % percentage of points which should be inliers to check model
+
+% Obtain best fit (and transpose for T form)
+best_fit = ransac(img1, img2, n, err, iter, threshold)';
+
+T = maketform('projective', best_fit/best_fit(3,3));
+
+% BEGIN CODE FROM MOSAIC DEMO
+figure('name','Mosiacing roofs');
+subplot(2,2,1);
+imshow(roofs1);
+title('Original 1');
+subplot(2,2,2);
+imshow(roofs2);
+title('Original 2');
+[x, y] = tformfwd(T,[1 size(roofs1,2)], [1 size(roofs1,1)]);
+
+xdata = [min(1,x(1)) max(size(roofs2,2),x(2))];
+ydata = [min(1,y(1)) max(size(roofs2,1),y(2))];
+f12 = imtransform(roofs1,T,'Xdata',xdata,'YData',ydata);
+f22 = imtransform(roofs2, maketform('affine', ...
+    [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
+subplot(2,2,3);
+imshow(max(f12,f22));
+title('Mosiacing result');
+% END CODE FROM MOSAIC DEMO
