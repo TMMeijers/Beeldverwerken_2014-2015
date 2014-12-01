@@ -181,8 +181,8 @@ img2 = im2single(img2);
 % Variables for RANSAC:
 n = 4; % 4 points needed for model
 err = 1; % error for inliers (euclidean pixel distance)
-iter = 25; % number of iterations to find best model
-threshold = 0.5; % percentage of points which should be inliers to check model
+iter = 20; % number of iterations to find best model
+threshold = 0.4; % percentage of points which should be inliers to check model
 
 % Obtain best fit (and transpose for T form)
 best_fit = ransac(img1, img2, n, err, iter, threshold)';
@@ -200,6 +200,8 @@ f22 = imtransform(nachtwacht2, maketform('affine', ...
 subplot(1,1,1);
 imshow(max(f12,f22));
 % END CODE FROM MOSAIC DEMO
+
+clear;
 
 %% Experimenting with RANSAC: Mountains
 % These mountains don't really differ in angle or rotation and thus are
@@ -224,7 +226,7 @@ best_fit = ransac(img1, img2, n, err, iter, threshold)';
 
 T = maketform('projective', best_fit/best_fit(3,3));
 
-% BEGIN CODE FROM MOSAIC DEMO
+% BEGIN (MODIFIED) CODE FROM MOSAIC DEMO
 figure('name','Mosiacing mountains');
 subplot(2,2,1);
 imshow(berg1);
@@ -243,6 +245,9 @@ subplot(2,2,3);
 imshow(max(f12,f22));
 title('Mosiacing result');
 % END CODE FROM MOSAIC DEMO
+
+clear;
+
 
 %% Experimenting with RANSAC: Nice people
 % Even though the angle of the images differs significantly the image can
@@ -267,7 +272,7 @@ best_fit = ransac(img1, img2, n, err, iter, threshold)';
 
 T = maketform('projective', best_fit/best_fit(3,3));
 
-% BEGIN CODE FROM MOSAIC DEMO
+% BEGIN (MODIFIED) CODE FROM MOSAIC DEMO
 figure('name','Mosiacing classroom');
 subplot(2,2,1);
 imshow(ppl1);
@@ -286,6 +291,9 @@ subplot(2,2,3);
 imshow(max(f12,f22));
 title('Mosiacing result');
 % END CODE FROM MOSAIC DEMO
+
+clear;
+
 
 %% Experimenting with RANSAC: Roofs
 % These pictures doesn't return a nice set of correct matches so we need a
@@ -310,7 +318,7 @@ best_fit = ransac(img1, img2, n, err, iter, threshold)';
 
 T = maketform('projective', best_fit/best_fit(3,3));
 
-% BEGIN CODE FROM MOSAIC DEMO
+% BEGIN (MODIFIED) CODE FROM MOSAIC DEMO
 figure('name','Mosiacing roofs');
 subplot(2,2,1);
 imshow(roofs1);
@@ -329,3 +337,5 @@ subplot(2,2,3);
 imshow(max(f12,f22));
 title('Mosiacing result');
 % END CODE FROM MOSAIC DEMO
+
+clear;

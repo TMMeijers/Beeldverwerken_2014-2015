@@ -8,8 +8,8 @@ function demo_mosaic_npoints(nrPoints)
 
     % Pick number of points
     [xy, xaya] = pickmatchingpoints(f1, f2, nrPoints, 1);
-    xy = xy'
-    xaya = xaya'
+    xy = xy';
+    xaya = xaya';
     
     % START OWN CODE
     % Obtain projection matrix (code from assignment 1) and transpose.
