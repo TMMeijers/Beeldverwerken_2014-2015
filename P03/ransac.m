@@ -15,11 +15,9 @@ function [best_fit] = ransac(img1, img2, n, err, iterations, threshold)
     m2coords = m2coords(1:2,:);
 
     inlier_margin = ceil(size(matches, 2) * threshold); % percentage inliers
-    
     best_error = inf();
     
     for i = 1:iterations
-        
         % Generate random indices to get n random point correspondences
         rand_samples = randi(size(matches, 2), 1, n);
         m1 = m1coords(:,rand_samples)';
@@ -31,7 +29,7 @@ function [best_fit] = ransac(img1, img2, n, err, iterations, threshold)
         p2 = fit * [m1coords; ones(1, size(m1coords, 2))];
         for j = 1:length(p2)
             p2(:,j) = p2(:,j) ./ p2(3,j);
-        end
+        end % end for normalize loop
         p2 = p2(1:2,:);
         
         % Calculate euclidean distance and inliers
@@ -57,11 +55,8 @@ function [best_fit] = ransac(img1, img2, n, err, iterations, threshold)
             if new_error < best_error;
                 best_error = new_error;
                 best_fit = fit;
-            end
-            
-        end % end if inliers
-        
-    end % end for i
-
+            end % end if error lower
+        end % end if enough inliers
+    end % end for main loop
 end % end main function
 

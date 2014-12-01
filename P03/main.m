@@ -6,8 +6,6 @@
 % DATE:
 % 1-12-2014
 
-% SIFT EXPLAINED: http://www.aishack.in/tutorials/sift-scale-invariant-feature-transform-introduction/
-
 %% Section 1: Introduction
 
 % Check if vl_feat library installed correctly
