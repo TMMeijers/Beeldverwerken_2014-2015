@@ -50,10 +50,10 @@ matches = vl_ubcmatch(D1, D2);
 % Get coordinates
 m1 = matches(1,:);
 m1coords = F1(:,m1);
-m1coords = m1coords([1:2],:);
+m1coords = m1coords(1:2,:);
 m2 = matches(2,:);
 m2coords = F2(:,m2);
-m2coords = m2coords([1:2],:);
+m2coords = m2coords(1:2,:);
 
 % Plot images and matching points
 figure('name','Visualizing matches');
@@ -92,14 +92,14 @@ matches = vl_ubcmatch(D1, D2);
 % Get coordinates
 m1 = matches(1,:);
 m1coords = F1(:,m1);
-m1coords = m1coords([1:2],:);
+m1coords = m1coords(1:2,:);
 m2 = matches(2,:);
 m2coords = F2(:,m2);
-m2coords = m2coords([1:2],:);
+m2coords = m2coords(1:2,:);
 
 % Get 4 points and make projection matrix
-pcoords1 = m1coords(:,[2:5])'; % 2 to 5 are correct matches
-pcoords2 = m2coords(:,[2:5])';
+pcoords1 = m1coords(:,2:5)'; % 2 to 5 are correct matches
+pcoords2 = m2coords(:,2:5)';
 P = projectionMatrix(pcoords1, pcoords2);
 
 % Transform to real coordinates and drop 3rd dimension (1's)
@@ -107,7 +107,7 @@ m2coords = P * [m1coords; ones(1, length(m1coords))];
 for i = 1:length(m2coords)
     m2coords(:,i) = m2coords(:,i) ./ m2coords(3,i);
 end
-m2coords = m2coords([1:2],:);
+m2coords = m2coords(1:2,:);
 
 % Plot images and matching points
 figure('name','Visualizing own matches');
@@ -129,10 +129,10 @@ title('2. Correct matches projection');
 % Get coordinates
 m1 = matches(1,:);
 m1coords = F1(:,m1);
-m1coords = m1coords([1:2],:);
+m1coords = m1coords(1:2,:);
 m2 = matches(2,:);
 m2coords = F2(:,m2);
-m2coords = m2coords([1:2],:);
+m2coords = m2coords(1:2,:);
 
 % Get 4 points and make projection matrix
 pcoords1 = m1coords(:,[1 12 18 25])'; % 2 to 5 are correct matches
@@ -169,3 +169,45 @@ title('2. False matches projection');
 % the wrong projection matrix.
 
 clear;
+
+%% Section 4: RANSAC
+
+nachtwacht1 = imread('nachtwacht1.jpg');
+img1 = rgb2gray(nachtwacht1);
+img1 = im2single(img1);
+nachtwacht2 = imread('nachtwacht2.jpg');
+img2 = rgb2gray(nachtwacht2);
+img2 = im2single(img2);
+
+% Variables for RANSAC:
+n = 4; % 4 points needed for model
+err = 1; % error for inliers (euclidean pixel distance)
+iter = 100; % number of iterations to find best model
+margin = 0.5; % percentage of points which should be inliers to check model
+
+% Obtain best fit (and transpose for T form)
+best_fit = ransac(img1, img2, n, err, iter, margin)';
+
+T = maketform('projective', best_fit/best_fit(3,3));
+
+% CODE FROM MOSAIC DEMO
+[x, y] = tformfwd(T,[1 size(nachtwacht1,2)], [1 size(nachtwacht1,1)]);
+
+xdata = [min(1,x(1)) max(size(nachtwacht2,2),x(2))];
+ydata = [min(1,y(1)) max(size(nachtwacht2,1),y(2))];
+f12 = imtransform(nachtwacht1,T,'Xdata',xdata,'YData',ydata);
+f22 = imtransform(nachtwacht2, maketform('affine', ...
+    [1 0 0; 0 1 0; 0 0 1]), 'Xdata',xdata,'YData',ydata);
+subplot(1,1,1);
+imshow(max(f12,f22));
+
+
+
+
+
+
+
+
+
+
+
