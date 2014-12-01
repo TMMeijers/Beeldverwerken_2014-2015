@@ -301,7 +301,7 @@ img2 = im2single(img2);
 
 % Variables for RANSAC:
 n = 4; % 4 points needed for model
-err = 5; % error for inliers (euclidean pixel distance)
+err = 1; % error for inliers (euclidean pixel distance)
 iter = 10000; % number of iterations to find best model
 threshold = 0.2; % percentage of points which should be inliers to check model
 
