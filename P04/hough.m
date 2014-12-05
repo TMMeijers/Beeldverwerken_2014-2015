@@ -1,4 +1,4 @@
-function [h] = hough (img, Thresh, nrho, ntheta, sigma)
+function [edge_map, h, h2] = hough (img, Thresh, nrho, ntheta, sigma)
 % HOUGH
 %
 % Function takes a grey scale image , constructs an edge map by applying
@@ -17,12 +17,13 @@ function [h] = hough (img, Thresh, nrho, ntheta, sigma)
     edge_map = canny(img, sigma, Thresh);
     [rows, cols] = size(edge_map);
 
-    rhomax = sqrt(rows ^2 + cols ^2); % The maximum possible value of rho.
-    drho = 2* rhomax / (nrho -1); % The increment in rho between successive
+    rhomax = sqrt(rows^2 + cols^2); % The maximum possible value of rho.
+    drho = 2 * rhomax / (nrho - 1); % The increment in rho between successive
     % entries in the accumulator matrix
     % Remember we go between +- rhomax
     
     h = zeros(nrho, ntheta);
+    h2 = zeros(size(h));
     dtheta = pi / ntheta; % The increment in theta between entries .
     thetas = [0: dtheta: (pi - dtheta)]; % Array of theta values across the
     % accumulator matrix
@@ -39,7 +40,16 @@ function [h] = hough (img, Thresh, nrho, ntheta, sigma)
             rhoindex = round(rho / drho + nrho / 2);
             thetaindex = round(thetas(j) / dtheta + 1);
             h(rhoindex, thetaindex) = ...
-                h(rhoindex, thetaindex) + 10;
+                h(rhoindex, thetaindex) + 1;
+            
+            rho = x(i) * cos(thetas(j)) + y(i) * sin(thetas(j));
+            % Convert a value of rho or theta
+            % to its appropriate index in the array:
+            rhoindex = round(rho / drho + nrho / 2);
+            thetaindex = round(thetas(j) / dtheta + 1);
+            h2(rhoindex, thetaindex) = ...
+                h2(rhoindex, thetaindex) + 1;
+            
         end % for theta
     end % for coord
 end % End main function (hough)
