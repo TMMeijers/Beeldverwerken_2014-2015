@@ -3,7 +3,7 @@ function [h] = hough (img, Thresh, nrho, ntheta, sigma)
 %
 % Function takes a grey scale image , constructs an edge map by applying
 % the Canny detector , and then constructs a Hough transform for finding
-% lines in the image .
+% lines in the image.
 %
 % @ARGUMENTS :
 % @im - The grey scale image to be transformed
@@ -19,29 +19,27 @@ function [h] = hough (img, Thresh, nrho, ntheta, sigma)
 
     rhomax = sqrt(rows ^2 + cols ^2); % The maximum possible value of rho.
     drho = 2* rhomax / (nrho -1); % The increment in rho between successive
-    % entries in the accumulator matrix .
-    % Remember we go between +- rhomax .
+    % entries in the accumulator matrix
+    % Remember we go between +- rhomax
     
     h = zeros(nrho, ntheta);
-    dtheta = pi / ntheta ; % The increment in theta between entries .
+    dtheta = pi / ntheta; % The increment in theta between entries .
     thetas = [0: dtheta: (pi - dtheta)]; % Array of theta values across the
-    % accumulator matrix .
-    % ...
+    % accumulator matrix
     
     % for each x and y of nonzero edge values :
-    [x, y] = find(edge_map > 0);
-    for coord = 1:length(x)
-        for theta = 1:length(thetas)
+    [y, x] = find(edge_map > 0);
+    for i = 1:length(x)
+        for j = 1:length(thetas)
             % Evaluate rho (see formula (1) in assignment)
-            rho = x(coord) * sin(theta) - y(coord) * cos(theta)
-    
+            rho = x(i) * sin(thetas(j)) - y(i) * cos(thetas(j));
+
             % Convert a value of rho or theta
             % to its appropriate index in the array:
-            rhoindex = round (rho / drho + nrho / 2);
-            thetaindex = round (theta / dtheta + 1);
-            h(thetaindex, rhoindex) = ...
-                h(thetaindex, rhoindex) + 1;
+            rhoindex = round(rho / drho + nrho / 2);
+            thetaindex = round(thetas(j) / dtheta + 1);
+            h(rhoindex, thetaindex) = ...
+                h(rhoindex, thetaindex) + 10;
         end % for theta
     end % for coord
-    
 end % End main function (hough)

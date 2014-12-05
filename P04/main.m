@@ -12,7 +12,7 @@ imgOrg = imread('shapes.png');
 img = im2double(imgOrg);
 img = rgb2gray(img);
 
-Thresh = [inf(), 0.08];
+Thresh = [inf(), 0];
 nrho = 500;
 ntheta = 500;
 sigma = 0.7;
@@ -21,4 +21,6 @@ sigma = 0.7;
 % imshow(test);
 
 h = hough(img, Thresh, nrho, ntheta, sigma);
-imshow(h);
+imshow(h, []);
+
+%% Section 3: 
