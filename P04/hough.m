@@ -14,7 +14,8 @@ function [edge_map, h] = hough (img, Thresh, nrho, ntheta, sigma)
 %
 % @RETURNS: h - The Hough transform
 
-    edge_map = canny(img, sigma, Thresh);
+%     edge_map = canny(img, sigma, Thresh);
+    edge_map = edge(img, 'Canny', Thresh, sigma); % Built in canny is better
     [rows, cols] = size(img);
     rhomax = sqrt(rows^2 + cols^2); % The maximum possible value of rho.
     drho = 2 * rhomax / (nrho - 1); % The increment in rho between successive

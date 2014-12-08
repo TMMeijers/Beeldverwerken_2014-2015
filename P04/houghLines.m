@@ -1,19 +1,20 @@
-function [lines] = houghLines(img, h, thresh)
-    % HOUGHLINES
-    %
-    % Function takes an image and its Hough transform , finds the
-    % significant lines and draws them over the image
-    %
-    % Usage : houghlines (im , h, thresh )
-    %
-    % arguments :
-    % im - The original image
-    % h - Its Hough Transform
-    % thresh - The threshold level to use in the Hough Transform
-    % to decide whether an edge is significant
+function [lines] = houghLines(img, h, thresh, dilate)
+% HOUGHLINES
+%
+% Function takes an image and its Hough transform , finds the
+% significant lines and draws them over the image
+%
+% Usage : houghlines (im , h, thresh )
+%
+% arguments :
+% im - The original image
+% h - Its Hough Transform
+% thresh - The threshold level to use in the Hough Transform
+% to decide whether an edge is significant
+
+    % Get parameters (see hough.m)
     [rows, cols] = size(img);
     rhomax = sqrt(rows^2 + cols^2); % The maximum possible value of rho.
-    
     [nrho, ntheta] = size(h);
     drho = 2 * rhomax / (nrho - 1); % The increment in rho between successive    
     dtheta = pi / ntheta; % The increment in theta between entries
@@ -21,12 +22,15 @@ function [lines] = houghLines(img, h, thresh)
     h(h < thresh) = 0;
     
     % Dilate the img (with circle based on size of h)
-    stampsize = round(size(h, 1) / 25);
-    [xx, yy] = meshgrid(1:stampsize);
-    stamp = sqrt((xx - stampsize / 2).^2 + (yy - stampsize / 2).^2) <= 20;
-    h = imdilate(h, stamp);
+    if dilate
+        dilatesize = round(size(h, 1) / 25);
+        [xx, yy] = meshgrid(1:dilatesize);
+        stamp = sqrt((xx - dilatesize / 2).^2 + (yy - dilatesize / 2).^2) <= 20;
+        h = imdilate(h, stamp);
+    end
     
     [bwl, nregions] = bwlabel(h);
+    nregions
     lines = zeros(nregions, 3);
     
     for n = 1:nregions
