@@ -18,30 +18,35 @@ function [lines] = houghLines(img, h, thresh)
     [nrho, ntheta] = size(h);
     drho = 2 * rhomax / (nrho - 1); % The increment in rho between successive    
     dtheta = pi / ntheta; % The increment in theta between entries .
-    
+    imshow(h, []);
     % Threshold
     h(h < thresh) = 0;
     
     [bwl, nregions] = bwlabel(h);
+    nregions
     lines = zeros(nregions, 3);
     
     for n = 1:nregions
         mask = bwl == n; % Form a mask for each region .
         region = mask .* h; % Point-wise multiply mask by Hough Transform
         % to obtain an image with just one region of the Hough Transform
-        
-        [rhoindex, thetaindex] = find(region ~= 0);
+        [rhoindex, thetaindex] = find(region == max(max(region)));
         rhoindex = round(mean(rhoindex));
         thetaindex = round(mean(thetaindex));
         
         % Obtain rho
         rho = drho * (rhoindex - nrho / 2);
+        if rho > rhomax
+            rho = rhomax;
+        end
+        
         % Obtain theta
         theta = (thetaindex - 1) * dtheta;
         
         [x1, y1, x2, y2] = thetarho2endpoints(theta, rho, rows, cols);
-        line_hom = cross([x1 y1 1], [x2 y2 1]);
-        line_hom = line_hom ./ sqrt(line_hom(1)^2 + line_hom(2)^2)
-        lines(n,:) = line_hom;
+        
+        line_hom = cross([x1; y1; 1], [x2; y2; 1]);
+        line_hom = line_hom ./ sqrt(line_hom(1)^2 + line_hom(2)^2);
+        lines(n,:) = line_hom
     end
 end

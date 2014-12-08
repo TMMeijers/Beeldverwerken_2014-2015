@@ -68,11 +68,10 @@ imgOrg = imread('shapes.png');
 img = im2double(imgOrg);
 img = rgb2gray(img);
 % Remove two false lines at the sides
-imgOrg = imgOrg(2:end,2:end);
 img = img(2:end,2:end);
 
 Thresh = [inf(), 0.1];
-thresh = 145;
+thresh = 145; %145
 nrho = 200;
 ntheta = 200;
 sigma = 0.7;
