@@ -32,9 +32,7 @@ end % end for i = training example
 k = 50;
 
 % Q2.1: Implement PCA
-tic;
 [E, G, D] = pca(X, k);
-time_pca = toc; % Time for Q2.4
 
 % % Q2.2: Plot the 9 most important vectors
 % figure('name','Question 2.2: Plot the 9 first PCA vectors');
@@ -62,25 +60,33 @@ time_pca = toc; % Time for Q2.4
 % % Apparently it does
 
 % Now take a random image and find the next best match (so not itsself)
-index = randi([1 data_examples], 1, 1);
-test_G = G(index,:);
+random_ind = randi([1 data_examples], 1, 1);
+tic;
+test_G = G(random_ind,:);
 % Calculate euclidean distance
 distance = sqrt(sum(bsxfun(@minus, G, test_G).^2, 2));
 % Sort and find best match (dist = 0, image = original) and next best
 [~, index] = sort(distance);
-figure('name','Question 2.3b: Find next best match');
+figure('name','Question 2.3b1: Find next best match (PCA)');
 subplot(1, 2, 1);
 imshow(images{1, index(1)}.img);
 title('Original Image');
 subplot(1, 2, 2);
 imshow(images{1, index(2)}.img);
 title('Closest Image');
+time_pca = toc;
 
 % Q2.4: Timing PCA versus naive image comparison
 tic;
-for i = 1:data_examples
-    img = X(i,:);
-    
-end % end for i = data example
+orig_img = X(random_ind,:);
+distance = sqrt(sum(bsxfun(@minus, X, orig_img).^2, 2));
+[~, index] = sort(distance);
+figure('name','Question 2.3b2: Find next best match (naive)');
+subplot(1, 2, 1);
+imshow(images{1, index(1)}.img);
+title('Original Image');
+subplot(1, 2, 2);
+imshow(images{1, index(2)}.img);
+title('Closest Image');
 time_naive = toc;
 
