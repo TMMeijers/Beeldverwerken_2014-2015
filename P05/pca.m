@@ -7,10 +7,10 @@ function [ E, G, D ] = pca( X, k )
     X_norm = bsxfun(@minus, X, X_mean);
 
     % Get k most important eigenvectors
+%     C = 1 /  * (X * X')
     [G, D] = eigs(X * X', k);
     % Obtain the most significant pixel weights
     E = G' * X_norm;
-%     sum(sum(G == E * X_norm))
     
 end
 
