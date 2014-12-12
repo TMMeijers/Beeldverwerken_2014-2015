@@ -1,7 +1,18 @@
-function [img_size, train_exmpls, test_exmpls, ...
-    X_trn, coords_trn, X_tst, coords_tst] = parse_data( images )
-%PARSE_DATA Summary of this function goes here
-%   Detailed explanation goes here
+function [ img_size, train_exmpls, test_exmpls, ...
+    X_trn, coords_trn, X_tst, coords_tst ] = parse_data( images )
+% PARSE_DATA is a helper function that reads the data needed for PCA and
+% returns it in certain data structures.
+%
+% @INPUT ARGUMENTS:
+% - images = a cell array with in each cell an image and a position
+%
+% @RETURNS:
+% - img_size, train_exmpls, test_exmpls = Are all integers specifying
+%       the dimensions of certain data structures
+% - X_trn, coords_trn = The training data split up in data examples and
+%       coupled coordinates
+% - X_tst, coords_tst = The testing data split up in data examples and
+%       coupled coordinates
 
     % Load and read data
     train_data = images(1, 1:300);

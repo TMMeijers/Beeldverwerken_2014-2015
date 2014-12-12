@@ -1,10 +1,11 @@
-%% BEELDVERWERKEN - LAB EXERCISE 4: Decting lines by Hough Transform
+%% BEELDVERWERKEN - LAB EXERCISE 5: 
+% Robot Positioning Using an Omnidirectional Camera
 
 % COLLABORATORS:
 % A.P. van Ree (10547320)
 % T.M. Meijers (10647023)
 % DATE:
-% 15-12-2014
+% 12-12-2014
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                Section 2: Principal Component Analysis                %%
